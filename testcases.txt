@@ -1,0 +1,44 @@
+GET:
+
+http://localhost:8000/v0/invoice-details/
+
+
+POST:
+http://localhost:8000/v0/invoice-details/
+{
+"customer": "shine123",
+"transactions": [
+    {
+      "product": "freshers",
+      "quantity": 1,
+      "price": 30
+    }
+  ]
+}
+
+
+PUT:
+http://localhost:8000/v0/invoice-details/
+{
+"customer": "shine",
+  "id":9,
+"transactions": [
+    {
+      "product": "freshers",
+      "quantity": 1,
+      "price": 30
+    },
+    {
+      "id": 2,
+      "product": "recruiter",
+      "quantity": 1,
+      "price": 30
+    }
+  ]
+}
+
+DELETE:
+
+{
+	"id": 10
+}

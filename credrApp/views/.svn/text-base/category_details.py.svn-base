@@ -1,0 +1,71 @@
+from django.http import Http404,HttpResponse, HttpResponseBadRequest
+import json
+
+from django.conf import settings
+from p3.db import query
+
+import time
+from datetime import datetime
+
+def category_details(request):
+    limit=request.REQUEST.get('limit','25')
+    offset=request.REQUEST.get('offset','0') 
+    category_id = request.REQUEST.get('category_id','')
+    category_name = request.REQUEST.get('category_name','')
+    parent_id = request.REQUEST.get('parent_id','')
+    where = "";
+       
+    if(category_id !=""):
+        sql = "SELECT * from p3_category_table WHERE category_id= %s "
+        param_for_category_details=[category_id]    
+        result = query(sql,*param_for_category_details)      
+        result_count = len(result)
+        if result_count == 0:
+            return HttpResponseBadRequest(content="Id does not exist in database")    
+        response_map = {}
+        response_map['category_id']=result[0]['category_id']
+        response_map['category_name']=result[0]['category_name']
+        response_map['category_info']=result[0]['category_info']
+        response_map['parent_id']=result[0]['parent_id']
+        response_map['created_time']=result[0]['created_time']
+        response_map['last_updated_time']=result[0]['created_time']
+        response_map['status']=result[0]['status']
+        response_map['comments']=result[0]['comments']             
+        response = {'data':response_map}     
+    else:
+        where = "1=1"
+        param_for_category_list=[] 
+        if(category_name !=""):           
+            category_name = "%"+category_name+"%"
+            where += " and UPPER(ct.category_name) like (%s)"
+            param_for_category_list.append(category_name)
+
+        if(parent_id !=""):
+            where += " and ct.parent_id = (%s)"
+            param_for_category_list.append(parent_id)
+                    
+        sql = "SELECT * from p3_category_table as ct where "+ where+" ORDER BY ct.category_id  DESC limit "+limit+" offset "+offset
+                   
+        results = query(sql,*param_for_category_list)     
+        final_test_map = []  
+        metadata_totalcount=0 
+        #result is constructed in the expected format
+        for result in results:
+            metadata_totalcount=metadata_totalcount+1
+            response_map = {}
+            response_map['category_id']=result['category_id']
+            response_map['category_name']=result['category_name']
+            response_map['category_info']=result['category_info']
+            response_map['parent_id']=result['parent_id']
+            response_map['created_time']=result['created_time']
+            response_map['last_updated_time']=result['created_time']
+            response_map['status']=result['status']
+            response_map['comments']=result['comments']  
+            final_test_map.append(response_map)
+                 
+        metadata = {"total_count":metadata_totalcount}
+        response = {"metadata":metadata,'data':final_test_map} 
+        
+    data = json.dumps(response, encoding="ISO-8859-1")    
+    http_response = HttpResponse(data,content_type="application/json")
+    return http_response

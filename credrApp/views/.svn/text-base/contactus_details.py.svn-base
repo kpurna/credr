@@ -1,0 +1,73 @@
+from django.http import Http404,HttpResponse, HttpResponseBadRequest
+import json
+
+from django.conf import settings
+from p3.db import query
+
+import time
+from datetime import datetime
+
+def contactus_details(request):
+    limit=request.REQUEST.get('limit','25')
+    offset=request.REQUEST.get('offset','0') 
+    contactus_id = request.REQUEST.get('contactus_id','')
+    name = request.REQUEST.get('name','')
+    email_id = request.REQUEST.get('email_id','')
+    where = "";
+       
+    if(contactus_id !=""):
+        sql = "SELECT * from p3_contact_us WHERE id= %s "
+        param_for_contactus_details=[contactus_id]    
+        result = query(sql,*param_for_contactus_details)      
+        result_count = len(result)
+        if result_count == 0:
+            return HttpResponseBadRequest(content="Id does not exist in database")    
+        response_map = {}
+        response_map['contactus_id']=result[0]['id']
+        response_map['name']=result[0]['name']
+        response_map['message']=result[0]['message']
+        response_map['email_id']=result[0]['email_id']
+        try:
+            response_map['date']=datetime.fromtimestamp(result[0]['date']).strftime('%d-%m-%Y')
+        except:
+            response_map['date']="NA"         
+        response = {'data':response_map}     
+    else:
+        where = "1=1"
+        param_for_contactus_list=[] 
+        if(name !=""):           
+            name = "%"+name+"%"
+            where += " and UPPER(cs.name) like (%s)"
+            param_for_contactus_list.append(name)
+
+        if(email_id !=""):
+            email_id = "%"+email_id+"%"
+            where += " and UPPER(cs.email_id) like (%s)"
+            param_for_contactus_list.append(email_id)
+                    
+        sql = "SELECT * from p3_contact_us as cs where "+ where+" ORDER BY cs.id  DESC"
+                   
+        results = query(sql,*param_for_contactus_list)     
+        final_test_map = []  
+        metadata_totalcount=0 
+        #result is constructed in the expected format
+        for result in results:
+            metadata_totalcount=metadata_totalcount+1
+            response_map = {}
+            response_map['contactus_id']=result['id']
+            response_map['name']=result['name']
+            response_map['message']=result['message']
+            response_map['"email_id']=result['email_id']
+            try:
+                response_map['date']=datetime.fromtimestamp(result['date']).strftime('%d-%m-%Y')
+            except:
+                response_map['date']="NA" 
+            final_test_map.append(response_map)
+ 
+        
+        metadata = {"total_count":metadata_totalcount}
+        response = {"metadata":metadata,'data':final_test_map} 
+        
+    data = json.dumps(response, encoding="ISO-8859-1")    
+    http_response = HttpResponse(data,content_type="application/json")
+    return http_response

@@ -1,0 +1,11 @@
+from tastypie.resources import ModelResource
+from p3.models.questions import Questions
+from tastypie.authorization import Authorization
+
+class QuestionsResource(ModelResource):
+	class Meta:
+		collection_name="data"
+		queryset = Questions.objects.all()
+		resource_name = 'questions'
+		authorization = Authorization()
+

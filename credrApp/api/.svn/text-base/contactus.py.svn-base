@@ -1,0 +1,14 @@
+from tastypie.resources import ModelResource
+from p3.models.contactus import Contactus
+from tastypie.authorization import Authorization
+
+class ContactusResource(ModelResource):
+	class Meta:
+		collection_name="data"
+		queryset = Contactus.objects.all()
+		resource_name = 'contactus'
+		authorization = Authorization()
+# 		excludes = ['subject','id']
+#  		fields=["email_id","name"]
+# 		list_allowed_methods = ["post","get","put","patch"]        
+# 		detail_allowed_methods = ["get","put","patch","delete"]

@@ -1,0 +1,81 @@
+from django.http import Http404,HttpResponse, HttpResponseBadRequest
+import json
+
+from django.conf import settings
+from p3.db import query
+
+import time
+from datetime import datetime
+
+def user_details(request):
+    limit=request.REQUEST.get('limit','25')
+    offset=request.REQUEST.get('offset','0') 
+    uid = request.REQUEST.get('uid','')
+    name = request.REQUEST.get('name','')
+    created_time = request.REQUEST.get('created_time','')
+    last_updated_time = request.REQUEST.get('last_updated_time','')
+    last_login_time = request.REQUEST.get('last_login_time','')
+    status = request.REQUEST.get('status','')
+    comments = request.REQUEST.get('comments','')
+
+    where = "";
+    
+    if(uid !=""):
+        sql = "SELECT * from p3_users_details WHERE uid= %s"
+        param_for_users_details=[uid]
+        result = query(sql,*param_for_users_details)
+        result_count = len(result)
+        if result_count == 0:
+            return HttpResponseBadRequest(content="Id does not exist in database")
+        response_map = {}
+        response_map['uid']=result[0]['uid']
+        response_map['name']=result[0]['name']
+        response_map['created_time']=result[0]['created_time']        
+        response_map['last_updated_time']=result[0]['last_updated_time']
+        response_map['last_login_time']=result[0]['last_login_time']
+        response_map['status']=result[0]['status']
+        response_map['comments']=result[0]['comments']
+
+    if(name !=""):
+        sql = "SELECT * from p3_users_details WHERE name= %s "
+        param_for_users_details=[name]
+        result = query(sql,*param_for_users_details)
+        result_count = len(result)
+        if result_count == 0:
+            return HttpResponseBadRequest(content="Name does not exist in database")
+        response_map = {}
+        response_map['uid']=result[0]['uid']
+        response_map['name']=result[0]['name']
+        response_map['created_time']=result[0]['created_time']        
+        response_map['last_updated_time']=result[0]['last_updated_time']
+        response_map['last_login_time']=result[0]['last_login_time']
+        response_map['status']=result[0]['status']
+        response_map['comments']=result[0]['comments']
+
+    else:
+     where = "1=1"
+     param_for_user_list=[] 
+
+     sql = "SELECT * from p3_users_details as cs where "+ where
+     results = query(sql,*param_for_user_list)     
+     final_test_map = []  
+     metadata_totalcount=0 
+    #result is constructed in the expected format
+    for result in results:
+      metadata_totalcount=metadata_totalcount+1
+      response_map = {}
+      response_map['uid']=result['uid']
+      response_map['name']=result['name']
+      response_map['created_time']=result['created_time']        
+      response_map['last_updated_time']=result['last_updated_time']
+      response_map['last_login_time']=result['last_login_time']
+      response_map['status']=result['status']
+      response_map['comments']=result['comments']
+      final_test_map.append(response_map)
+    
+    metadata = {"total_count":metadata_totalcount}
+    response = {"metadata":metadata,'data':final_test_map} 
+        
+    data = json.dumps(response, encoding="ISO-8859-1")    
+    http_response = HttpResponse(data,content_type="application/json")
+    return http_response

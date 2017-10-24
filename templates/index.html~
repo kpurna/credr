@@ -1,0 +1,34 @@
+<html>
+<head>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+<title>API For sourav Demo App </title>
+</head>
+
+<body>
+<div class="container">
+<h2>API For sourav Demo App </h2>
+<table class="table table-bordered table-striped">
+<thead><tr>
+<th align="left">URL</th>
+<th align="right">HTTP Verb</th>
+<th align="center">Functionality</th>
+</tr></thead>
+<tbody>
+	
+<tr>
+<td align="left">/v0/user-details/</td>
+<td align="right">GET</td>
+<td align="center"><a href="/v0/user-details/">retrieving user details</a></td>
+</tr>
+<tr>
+<td align="left">/v1/user/</td>
+<td align="right">POST,PUT,PATCH,DELETE</td>
+<td align="center"><a href="/v1/user/">create,edit,update,delete user</a></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+</body>
+</html>

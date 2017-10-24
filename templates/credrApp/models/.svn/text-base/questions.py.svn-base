@@ -1,0 +1,25 @@
+from django.db import models
+class Questions(models.Model):
+    question_id = models.AutoField(primary_key=True)
+    question_title = models.TextField()
+    question_type = models.CharField(max_length=30)
+    category_id = models.IntegerField()
+    difficulty_type = models.CharField(max_length=30)
+    question_choice1 = models.TextField()
+    question_choice2 = models.TextField()
+    question_choice3 = models.TextField()
+    question_choice4 = models.TextField()
+    question_choice5 = models.TextField()
+    question_instruction = models.TextField()
+    answer = models.TextField()
+    tags = models.TextField()
+    seo_title = models.TextField()
+    seo_description = models.TextField()
+    seo_keyword = models.TextField()
+    created_time = models.IntegerField()
+    last_updated_time = models.IntegerField()
+    status = models.IntegerField(default=1)
+    comments = models.CharField(max_length=60,null=True)
+    class Meta:
+        db_table = u'p3_questions'
+        app_label = "p3"

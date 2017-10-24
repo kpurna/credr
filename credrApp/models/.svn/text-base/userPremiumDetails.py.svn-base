@@ -1,0 +1,19 @@
+from django.db import models
+class userPremiumDetails(models.Model):
+    uid = models.AutoField(primary_key=True)
+    transaction_id = models.CharField(max_length=40)
+    expiry_date = models.IntegerField(11)
+    bank_name = models.CharField(max_length=100)
+    cheque_no = models.CharField(max_length=20)
+    request_date = models.IntegerField(11)
+    approve_date = models.IntegerField(11)
+    category_id = models.IntegerField(4)
+    status = models.IntegerField(default=1)
+    comment = models.CharField(max_length=60,null=True)
+    created_time = models.IntegerField(null=True)
+    last_update_time = models.IntegerField(11,null=True)
+    src = models.CharField(max_length=10,null=True)
+    amount = models.CharField(max_length=10)
+    class Meta:
+        db_table = u'p3_users_premium_details'
+        app_label = "p3"

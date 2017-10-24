@@ -1,0 +1,118 @@
+from django.http import Http404,HttpResponse, HttpResponseBadRequest
+import json
+
+from django.conf import settings
+from p3.db import query
+
+import time
+from datetime import datetime
+
+def question_details(request):
+    limit=request.REQUEST.get('limit','25')
+    offset=request.REQUEST.get('offset','0') 
+    question_id = request.REQUEST.get('question_id','')
+    question_title = request.REQUEST.get('question_title','')
+    question_type = request.REQUEST.get('question_type','')
+    category_id = request.REQUEST.get('category_id','')    
+    difficulty_type = request.REQUEST.get('difficulty_type','')
+    question_choice1 = request.REQUEST.get('question_choice1','')
+    question_choice2 = request.REQUEST.get('question_choice2','')
+    question_choice3 = request.REQUEST.get('question_choice3','')
+    question_choice4 = request.REQUEST.get('question_choice4','')
+    question_choice5 = request.REQUEST.get('question_choice5','')
+    question_instruction = request.REQUEST.get('question_instruction','')
+    answer = request.REQUEST.get('answer','')
+    tags = request.REQUEST.get('tags','')
+    created_time = request.REQUEST.get('created_time','')
+    last_updated_time = request.REQUEST.get('last_updated_time','')
+    status = request.REQUEST.get('status','')
+    comments = request.REQUEST.get('comments','')
+
+    where = "";
+    
+    if(question_id !=""):
+        sql = "SELECT q.question_id,q.question_title,q.question_type,q.category_id,q.difficulty_type,q.question_choice1,q.question_choice2,q.question_choice3,q.question_choice4,q.question_choice5,q.question_instruction,q.answer,q.tags,q.seo_title,q.seo_description, q.seo_keyword,q.created_time,q.last_updated_time,q.status,p.parent_id from fw.p3_questions q JOIN fw.p3_category_details p ON q.category_id=p.category_id WHERE question_id= %s"
+        param_for_question_details=[question_id]
+        result = query(sql,*param_for_question_details)
+        print result
+        result_count = len(result)
+        if result_count == 0:
+            return HttpResponseBadRequest(content="Id does not exist in database")
+        response_map = {}
+        response_map['sub_category_id']=result[0]['parent_id']
+        response_map['tags']=result[0]['tags']
+        response_map['category_id']=result[0]['category_id']
+
+        questionDetails = {}
+        questionDetails['question_type']=result[0]['question_type']    
+        questionDetails['difficulty_type']=result[0]['difficulty_type']
+    
+        questionToSolve = {}
+        questionToSolve['question_id']=result[0]['question_id']
+        questionToSolve['question_title']=result[0]['question_title']
+        questionToSolve['question_choice1']=result[0]['question_choice1']
+        questionToSolve['question_choice2']=result[0]['question_choice2']
+        questionToSolve['question_choice3']=result[0]['question_choice3']
+        questionToSolve['question_choice4']=result[0]['question_choice4']
+        questionToSolve['question_choice5']=result[0]['question_choice5']
+        questionToSolve['correct_answer']=result[0]['answer']
+        questionDetails['questions'] = questionToSolve    
+    
+        response_map['details'] = questionDetails
+        response_map['seo_title']=result[0]['seo_title']
+        response_map['seo_description']=result[0]['seo_description']
+        response_map['seo_keyword']=result[0]['seo_keyword']
+        response_map['created_date']=result[0]['created_time']
+        response_map['changed_date']=result[0]['last_updated_time']
+        response_map['status']=result[0]['status']
+        response_map['date']=result[0]['date']       
+        response = {'data':response_map}     
+    else:
+        where = "1=1"
+        param_for_question_list=[] 
+                      
+        sql = "SELECT * from p3_questions as cs where "+ where
+                   
+        results = query(sql,*param_for_question_list)     
+        final_test_map = []  
+        metadata_totalcount=0 
+        #result is constructed in the expected format
+        for result in results:
+            metadata_totalcount=metadata_totalcount+1
+            response_map = {}
+            questions = {}
+            questions['question_type']=result['question_type']
+            questions['category_id']=result['category_id']
+            questions['tags']=result['tags']
+            response_map['questions'] = questions
+
+            details = {}
+            questionOption = {}
+            questionOption['question_type']=result['question_type']
+            questionOption['difficulty_type']=result['difficulty_type']
+            response_map['detail'] = questionOption
+
+            details['question_title']=result['question_title']
+            details['question_choice1']=result['question_choice1']
+            details['question_choice2']=result['question_choice2']
+            details['question_choice3']=result['question_choice3']
+            details['question_choice4']=result['question_choice4']
+            details['question_choice5']=result['question_choice5']
+            details['correct_answer']=result['answer']
+            response_map['details'] = details
+
+            response_map['seo_title']=result['seo_title']
+            response_map['seo_description']=result['seo_description']
+            response_map['seo_keyword']=result['seo_keyword']
+            response_map['created_date']=result['created_time']
+            response_map['changed_date']=result['last_updated_time']
+            response_map['status']=result['status']
+            response_map['comments']=result['comments']
+              
+            final_test_map.append(response_map)
+    metadata = {"total_count":metadata_totalcount}
+    response = {"metadata":metadata,'data':final_test_map} 
+            
+    data = json.dumps(response, encoding="ISO-8859-1")    
+    http_response = HttpResponse(data,content_type="application/json")
+    return http_response

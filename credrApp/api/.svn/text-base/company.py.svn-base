@@ -1,0 +1,10 @@
+from p3.models.company import Company
+from tastypie.resources import ModelResource
+from tastypie.authorization import Authorization
+
+class CompanyResource(ModelResource):
+    class Meta:
+        collection_name="data"
+        queryset=Company.objects.all()
+        resource_name="company"
+        authorization=Authorization()

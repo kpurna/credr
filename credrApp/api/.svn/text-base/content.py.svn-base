@@ -1,0 +1,10 @@
+from p3.models.content import Content
+from tastypie.resources import ModelResource
+from tastypie.authorization import Authorization
+
+class ContentResource(ModelResource):
+    class Meta:
+        collection_data="data"
+        queryset=Content.objects.all()
+        resource_name="content"
+        authorization=Authorization()

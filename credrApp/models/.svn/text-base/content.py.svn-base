@@ -1,0 +1,29 @@
+from django.db import models
+from tastypie.utils.timezone import now
+
+class Content(models.Model):
+    content_id=models.AutoField(primary_key=True)
+    content_type=models.CharField(max_length=100)
+    content_description=models.TextField()
+    company_id = models.IntegerField()
+    company_name = models.CharField(max_length=500)
+    category_id = models.IntegerField()
+    sub_category_id = models.IntegerField()
+    tags =  models.CharField(max_length=500)
+    contributed_by =  models.CharField(max_length=500)
+    contributed_email_id = models.CharField(max_length=500)
+    verified_status  = models.IntegerField()
+    priority =  models.IntegerField()
+    test_date = models.IntegerField()
+    rating = models.IntegerField()
+    original_page_views = models.IntegerField()
+    seo_title = models.CharField(max_length=500)
+    seo_description = models.CharField(max_length=500)
+    seo_keyword = models.CharField(max_length=500)
+    created_time = models.IntegerField()
+    last_updated_time = models.IntegerField()
+    status = models.IntegerField()
+    comments = models.TextField()
+    class Meta:
+        db_table = 'p3_content_details'
+        app_label = "p3"

@@ -1,0 +1,16 @@
+from django.db import models
+from tastypie.utils.timezone import now
+
+class Contactus(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=500)
+	email_id=models.CharField(max_length=500)
+	subject=models.CharField(max_length=500,null=True)
+	message= models.TextField()
+	date=models.IntegerField(max_length=500,default=now)
+	class Meta:
+	    db_table = u'p3_contact_us'
+	    app_label = "p3"
+
+	
+ 

@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/p3-api/!svn/ver/20/p3-dev-api/p3/views
+END
+user_premium_details.py
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p3-api/!svn/ver/36/p3-dev-api/p3/views/user_premium_details.py
+END
+index.py
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/p3-api/!svn/ver/14/p3-dev-api/p3/views/index.py
+END
+contactus_details.py
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p3-api/!svn/ver/14/p3-dev-api/p3/views/contactus_details.py
+END
+category_details.py
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p3-api/!svn/ver/14/p3-dev-api/p3/views/category_details.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/p3-api/!svn/ver/5/p3-dev-api/p3/views/__init__.py
+END
+company_details.py
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p3-api/!svn/ver/20/p3-dev-api/p3/views/company_details.py
+END
+user_details.py
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p3-api/!svn/ver/35/p3-dev-api/p3/views/user_details.py
+END
+content_details.py
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p3-api/!svn/ver/14/p3-dev-api/p3/views/content_details.py
+END
+question_details.py
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p3-api/!svn/ver/33/p3-dev-api/p3/views/question_details.py
+END

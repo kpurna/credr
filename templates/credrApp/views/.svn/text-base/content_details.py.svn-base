@@ -1,0 +1,103 @@
+from django.http import Http404,HttpResponse, HttpResponseBadRequest
+import json
+
+from django.conf import settings
+from p3.db import query
+
+import time
+from datetime import datetime
+
+def content_details(request):
+    limit=request.REQUEST.get('limit','25')
+    offset=request.REQUEST.get('offset','0') 
+    content_id = request.REQUEST.get('content_id','')
+    name = request.REQUEST.get('name','')
+    email_id = request.REQUEST.get('email_id','')
+    where = "";
+       
+    if(content_id !=""):
+        sql = "select cd.content_id,cd.content_type,cd.content_description,cd.company_id,cd.company_name,cd.category_id,cd.sub_category_id,cd.tags,cd.contributed_by,cd.contributed_email_id,cd.verified_status,cd.priority,cd.test_date,cd.rating,cd.original_page_views,cd.seo_title,cd.seo_description,cd.seo_keyword,cd.created_time,cd.last_updated_time,cd.status,cd.comments from p3_content_details as cd WHERE cd.content_id= %s "
+        param_for_content_details=[content_id]    
+        result = query(sql,*param_for_content_details)      
+        result_count = len(result)
+        if result_count == 0:
+            return HttpResponseBadRequest(content="Id does not exist in database")    
+        response_map = {}
+        details=[result[0]['content_description']]
+        response_map['content_id']=result[0]['content_id']
+        response_map['content_type']=result[0]['content_type']
+        response_map['details']=result[0]['content_description']
+        response_map['company_id']=result[0]['company_id']
+        response_map['company_name']=result[0]['company_name']
+        response_map['category_id']=result[0]['category_id']
+        response_map['sub_category_id']=result[0]['sub_category_id']
+        response_map['tags']=result[0]['tags']
+        response_map['contributed_by']=result[0]['contributed_by']
+        response_map['contributed_email_id']=result[0]['contributed_email_id']
+        response_map['verified_status']=result[0]['verified_status']                 
+        response_map['priority']=result[0]['priority']
+        response_map['test_date']=result[0]['test_date']
+        response_map['rating']=result[0]['rating']
+        response_map['original_page_views']=result[0]['original_page_views']
+        response_map['seo_title']=result[0]['seo_title']
+        response_map['seo_description']=result[0]['seo_description']
+        response_map['seo_keyword']=result[0]['seo_keyword']
+        response_map['created_time']=result[0]['created_time']
+        response_map['last_updated_time']=result[0]['last_updated_time']
+        response_map['status']=result[0]['status']
+        response_map['comments']=result[0]['comments'] 
+        response = {'content':response_map}   
+    else:
+        where = "1=1"
+        param_for_content_list=[] 
+        if(name !=""):           
+            name = "%"+name+"%"
+            where += " and UPPER(cs.name) like (%s)"
+            param_for_content_list.append(name)
+
+        if(email_id !=""):
+            email_id = "%"+email_id+"%"
+            where += " and UPPER(cs.email_id) like (%s)"
+            param_for_content_list.append(email_id)
+                    
+        sql = "SELECT cd.content_id,cd.content_type,cd.content_description,cd.company_id,cd.company_name,cd.category_id,cd.sub_category_id,cd.tags,cd.contributed_by,cd.contributed_email_id,cd.verified_status,cd.priority,cd.test_date,cd.rating,cd.original_page_views,cd.seo_title,cd.seo_description,cd.seo_keyword,cd.created_time,cd.last_updated_time,cd.status,cd.comments from p3_content_details as cd where "+ where+" ORDER BY cd.content_id  DESC"
+                   
+        results = query(sql,*param_for_content_list)     
+        final_test_map = []  
+        metadata_totalcount=0 
+        #result is constructed in the expected format
+        for result in results:
+            metadata_totalcount=metadata_totalcount+1
+            response_map = {}
+            response_map['content_id']=result['content_id']
+            response_map['content_type']=result['content_type']
+            response_map['details']=result['content_description']
+            response_map['company_id']=result['company_id']
+            response_map['company_name']=result['company_name']
+            response_map['category_id']=result['category_id']
+            response_map['sub_category_id']=result['sub_category_id']
+            response_map['tags']=result['tags']
+            response_map['contributed_by']=result['contributed_by']
+            response_map['contributed_email_id']=result['contributed_email_id']
+            response_map['verified_status']=result['verified_status']                 
+            response_map['priority']=result['priority']
+            response_map['test_date']=result['test_date']
+            response_map['rating']=result['rating']
+            response_map['original_page_views']=result['original_page_views']
+            response_map['seo_title']=result['seo_title']
+            response_map['seo_description']=result['seo_description']
+            response_map['seo_keyword']=result['seo_keyword']
+            response_map['created_time']=result['created_time']
+            response_map['last_updated_time']=result['last_updated_time']
+            response_map['status']=result['status']
+            response_map['comments']=result['comments']
+               
+            final_test_map.append(response_map)
+ 
+        
+        metadata = {"total_count":metadata_totalcount}
+        response = {"metadata":metadata,'content':final_test_map} 
+        
+    data = json.dumps(response, encoding="ISO-8859-1")    
+    http_response = HttpResponse(data,content_type="application/json")
+    return http_response

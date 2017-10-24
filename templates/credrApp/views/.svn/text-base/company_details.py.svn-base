@@ -1,0 +1,120 @@
+from django.http import Http404,HttpResponse, HttpResponseBadRequest
+import json
+
+from django.conf import settings
+from p3.db import query
+
+import time
+from datetime import datetime
+
+def company_details(request):
+    limit=request.REQUEST.get('limit','25')
+    offset=request.REQUEST.get('offset','0') 
+    client_id = request.REQUEST.get('client_id','')
+    company_name = request.REQUEST.get('company_name','')
+    company_category = request.REQUEST.get('company_category','')
+    tags = request.REQUEST.get('tags','')
+    where = "";
+       
+    if(client_id !=""):
+        sql = "SELECT id,client_id,company_name,head_title,top_content,tags,company_logo_url,company_image_url,url,video_url,placement_paper_company_name,keyword1,keyword2,keyword3,keyword4,keyword5,keyword5,key_link1,key_link2,key_link3,key_link4,key_link5,key_link6,seo_description,seo_keywords,status,comment,last_updated_time,created_time,company_category,verified_status,priority from p3_company_details WHERE client_id= %s "
+        param_for_company_details=[client_id]    
+        result = query(sql,*param_for_company_details)      
+        result_count = len(result)
+        if result_count == 0:
+            return HttpResponseBadRequest(content="Id does not exist in database")    
+        response_map = {}
+        response_map['id']=result[0]['id']
+        response_map['client_id']=result[0]['client_id']
+        response_map['company_name']=result[0]['company_name']
+        response_map['head_title']=result[0]['head_title']
+        response_map['top_content']=result[0]['top_content']    
+        response_map['tags']=result[0]['tags']
+        response_map['company_logo_url']=result[0]['company_logo_url']
+        response_map['company_image_url']=result[0]['company_image_url']
+        response_map['url']=result[0]['url']
+        response_map['video_url']=result[0]['video_url']
+        response_map['placement_paper_company_name']=result[0]['placement_paper_company_name']
+        response_map['keyword1']=result[0]['keyword1']
+        response_map['keyword2']=result[0]['keyword2']
+        response_map['keyword3']=result[0]['keyword3']
+        response_map['keyword4']=result[0]['keyword4']
+        response_map['keyword5']=result[0]['keyword5']
+        response_map['keyword6']=result[0]['keyword6']
+        response_map['key_link1']=result[0]['key_link1']
+        response_map['key_link2']=result[0]['key_link2']
+        response_map['key_link3']=result[0]['key_link3']
+        response_map['key_link4']=result[0]['key_link4']
+        response_map['key_link5']=result[0]['key_link5']
+        response_map['key_link6']=result[0]['key_link6']
+        response_map['seo_description']=result[0]['seo_description'] 
+        response_map['seo_keywords']=result[0]['seo_keywords']
+        response_map['status']=result[0]['status']
+        response_map['comment']=result[0]['comment']
+        response_map['last_updated_time']=result[0]['last_updated_time']
+        response_map['created_time']=result[0]['created_time']
+        response_map['company_category']=result[0]['company_category']
+        response_map['verified_status']=result[0]['verified_status']
+        response_map['priority']=result[0]['priority']                      
+        response = {'data':response_map}     
+    else:
+        where = "1=1"
+        param_for_company_list=[] 
+        if(company_name !=""):           
+            company_name = "%"+company_name+"%"
+            where += " and UPPER(cd.company_name) like (%s)"
+            param_for_company_list.append(company_name)
+
+        if(tags !=""):
+            tags = "%"+tags+"%"
+            where += " and UPPER(cd.tags) like (%s)"
+            param_for_company_list.append(tags)
+                    
+        sql = "SELECT id,client_id,company_name,head_title,top_content,tags,company_logo_url,company_image_url,url,video_url,placement_paper_company_name,keyword1,keyword2,keyword3,keyword4,keyword5,keyword5,key_link1,key_link2,key_link3,key_link4,key_link5,key_link6,seo_description,seo_keywords,status,comment,last_updated_time,created_time,company_category,verified_status,priority  from p3_company_details as cd where "+ where+" ORDER BY cd.client_id  DESC"
+                   
+        results = query(sql,*param_for_company_list)     
+        final_test_map = []  
+        metadata_totalcount=0 
+        #result is constructed in the expected format
+        for result in results:
+            metadata_totalcount=metadata_totalcount+1
+            response_map = {}
+            response_map['id']=result['id']
+            response_map['client_id']=result['client_id']
+            response_map['company_name']=result['company_name']
+            response_map['head_title']=result['head_title']
+            response_map['top_content']=result['top_content']    
+            response_map['tags']=result['tags']
+            response_map['company_logo_url']=result['company_logo_url']
+            response_map['company_image_url']=result['company_image_url']
+            response_map['url']=result['url']
+            response_map['video_url']=result['video_url']
+            response_map['placement_paper_company_name']=result['placement_paper_company_name']
+            response_map['keyword1']=result['keyword1']
+            response_map['keyword2']=result['keyword2']
+            response_map['keyword3']=result['keyword3']
+            response_map['keyword4']=result['keyword4']
+            response_map['keyword5']=result['keyword5']
+            response_map['keyword6']=result['keyword6']
+            response_map['key_link1']=result['key_link1']
+            response_map['key_link2']=result['key_link2']
+            response_map['key_link3']=result['key_link3']
+            response_map['key_link4']=result['key_link4']
+            response_map['key_link5']=result['key_link5']
+            response_map['key_link6']=result['key_link6']
+            response_map['seo_description']=result['seo_description'] 
+            response_map['seo_keywords']=result['seo_keywords']
+            response_map['status']=result['status']
+            response_map['comment']=result['comment']
+            response_map['last_updated_time']=result['last_updated_time']
+            response_map['created_time']=result['created_time']
+            response_map['company_category']=result['company_category']
+            response_map['verified_status']=result['verified_status']
+            response_map['priority']=result['priority']          
+            final_test_map.append(response_map)     
+        metadata = {"total_count":metadata_totalcount}
+        response = {"metadata":metadata,'data':final_test_map} 
+        
+    data = json.dumps(response, encoding="ISO-8859-1")    
+    http_response = HttpResponse(data,content_type="application/json")
+    return http_response

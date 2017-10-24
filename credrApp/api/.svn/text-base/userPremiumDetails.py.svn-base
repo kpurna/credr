@@ -1,0 +1,11 @@
+from tastypie.resources import ModelResource
+from p3.models.userPremiumDetails import userPremiumDetails
+from tastypie.authorization import Authorization
+
+class userPremiumDetailsResource(ModelResource):
+	class Meta:
+		collection_name="data"
+		queryset = userPremiumDetails.objects.all()
+		resource_name = 'userPremiumDetails'
+		authorization = Authorization()
+

@@ -1,0 +1,88 @@
+from django.http import Http404,HttpResponse, HttpResponseBadRequest
+import json
+
+from django.conf import settings
+from p3.db import query
+
+import time
+from datetime import datetime
+
+def user_premium_details(request):
+    limit=request.REQUEST.get('limit','25')
+    offset=request.REQUEST.get('offset','0') 
+    uid = request.REQUEST.get('uid','')
+    transaction_id = request.REQUEST.get('transaction_id','')
+    amount = request.REQUEST.get('amount','')
+    expiry_date = request.REQUEST.get('expiry_date','')    
+    bank_name = request.REQUEST.get('bank_name','')
+    cheque_no = request.REQUEST.get('cheque_no','')
+    request_date = request.REQUEST.get('request_date','')
+    approve_date = request.REQUEST.get('approve_date','')
+    category_id = request.REQUEST.get('category_id','')    
+    amount = request.REQUEST.get('amount','')
+    src = request.REQUEST.get('src','')
+    status = request.REQUEST.get('status','')
+    comment = request.REQUEST.get('comments','')
+    created_time = request.REQUEST.get('created_time','')
+
+    where = "";
+    
+    if(uid !=""):
+        sql = "SELECT * from p3_users_premium_details WHERE uid= %s "
+        param_for_uid=[uid]
+        result = query(sql,*param_for_uid)
+        print result
+        result_count = len(result)
+        if result_count == 0:
+            return HttpResponseBadRequest(content="UID does not exist in database")
+        response_map = {}
+        response_map['uid']=result[0]['uid']
+        response_map['transaction_id']=result[0]['transaction_id']
+        response_map['amount']=result[0]['amount']
+        response_map['expiry_date']=result[0]['expiry_date']    
+        response_map['bank_name']=result[0]['bank_name']
+        response_map['cheque_no']=result[0]['cheque_no']
+        response_map['request_date']=result[0]['request_date']
+        response_map['approve_date']=result[0]['approve_date']
+        response_map['category_id']=result[0]['category_id']    
+        response_map['amount']=result[0]['amount']
+        response_map['src']=result[0]['src']
+        response_map['status']=result[0]['status']
+        response_map['comments']=result[0]['comments']
+        response_map['created_time']=result[0]['created_time']
+        
+    else:
+     where = "1=1"
+     param_for_premiumUser_list=[] 
+        
+     sql = "SELECT * from p3_users_premium_details as cs where "+ where
+                   
+     results = query(sql,*param_for_premiumUser_list)     
+     final_test_map = []  
+     metadata_totalcount=0 
+     #result is constructed in the expected format
+     for result in results:
+       metadata_totalcount=metadata_totalcount+1
+       response_map = {}
+       response_map['uid']=result['uid']
+       response_map['transaction_id']=result['transaction_id']
+       response_map['amount']=result['amount']
+       response_map['expiry_date']=result['expiry_date']    
+       response_map['bank_name']=result['bank_name']
+       response_map['cheque_no']=result['cheque_no']
+       response_map['request_date']=result['request_date']
+       response_map['approve_date']=result['approve_date']
+       response_map['category_id']=result['category_id']    
+       response_map['amount']=result['amount']
+       response_map['src']=result['src']
+       response_map['status']=result['status']
+       response_map['comments']=result['comments']
+       response_map['created_time']=result['created_time']
+            
+       final_test_map.append(response_map)
+    metadata = {"total_count":metadata_totalcount}
+    response = {"metadata":metadata,'data':final_test_map} 
+        
+    data = json.dumps(response, encoding="ISO-8859-1")    
+    http_response = HttpResponse(data,content_type="application/json")
+    return http_response

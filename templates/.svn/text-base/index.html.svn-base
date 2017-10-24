@@ -1,0 +1,89 @@
+<html>
+<head>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+<title>REST API For P3 </title>
+</head>
+
+<body>
+<div class="container">
+<h2>P3 API</h2>
+<table class="table table-bordered table-striped">
+<thead><tr>
+<th align="left">URL</th>
+<th align="right">HTTP Verb</th>
+<th align="center">Functionality</th>
+</tr></thead>
+<tbody>
+	
+<tr>
+<td align="left">/v0/content-details/</td>
+<td align="right">GET</td>
+<td align="center"><a href="/v0/content-details/">retrieving content details</a></td>
+</tr>
+<tr>
+<td align="left">/v1/content/</td>
+<td align="right">POST,PUT,PATCH,DELETE</td>
+<td align="center"><a href="/v1/content/">create,edit,update,delete content</a></td>
+</tr>
+
+<tr>
+<td align="left">/v0/company-details/</td>
+<td align="right">GET</td>
+<td align="center"><a href="/v0/company-details/">retrieving company details</a></td>
+</tr>
+<tr>
+<td align="left">/v1/company/</td>
+<td align="right">POST,PUT,PATCH,DELETE</td>
+<td align="center"><a href="/v1/company/">create,edit,update,delete a company</a></td>
+</tr>
+
+<tr>
+<td align="left">/v0/category-details/</td>
+<td align="right">GET</td>
+<td align="center"><a href="/v0/category-details/">retrieving category details</a></td>
+</tr>
+<tr>
+<td align="left">/v1/category/</td>
+<td align="right">POST,PUT,PATCH,DELETE</td>
+<td align="center"><a href="/v1/category/">create,edit,update,delete a category</a></td>
+</tr>
+
+<tr>
+<td align="left">/v0/question-details/</td>
+<td align="right">GET</td>
+<td align="center"><a href="/v0/question-details/">retrieving question details</a></td>
+</tr>
+<tr>
+<td align="left">/v1/questions/</td>
+<td align="right">POST,PUT,PATCH,DELETE</td>
+<td align="center"><a href="/v1/questions/">create,edit,update,delete a question</a></td>
+</tr>
+
+<tr>
+<td align="left">/v0/user-details/</td>
+<td align="right">GET</td>
+<td align="center"><a href="/v0/user-details/">retrieving user details</a></td>
+</tr>
+<tr>
+<td align="left">/v1/userDetails/</td>
+<td align="right">POST,PUT,PATCH,DELETE</td>
+<td align="center"><a href="/v1/userDetails/">create,edit,update,delete a userDetails</a></td>
+</tr>
+
+<tr>	
+<td align="left">/v0/user_premium_details/</td>
+<td align="right">GET</td>
+<td align="center"><a href="/v0/user_premium_details/">retrieving user premium details</a></td>
+</tr>
+<tr>
+<td align="left">/v1/userPremiumDetails/</td>
+<td align="right">POST,PUT,PATCH,DELETE</td>
+<td align="center"><a href="/v1/userPremiumDetails/">create,edit,update,delete user premium details</a></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+</body>
+</html>

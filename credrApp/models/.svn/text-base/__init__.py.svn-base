@@ -1,0 +1,4 @@
+from p3.models.category import Category
+from p3.models.content import Content
+from p3.models.company import Company
+from p3.models.contactus import Contactus

@@ -74,7 +74,8 @@ url: http://localhost:8000/v0/invoice-details/
 ************ GET Record **************
 
 http://localhost:8000/v0/invoice-details/    ///////// get all the records
-http://localhost:8000/v2/invoice-details/9/ /// get particluar reordc with id specified
+
+http://localhost:8000/v2/invoice-details/9/  /// get particluar reordc with id specified
 
 
 
